@@ -55,20 +55,55 @@ In the SessionForm pass in:
 
 ### Explain your design choices
 
-For the session implementation I modeled the conference implementation, but removed things like display name since I didn't need it for sessions.
+For the session implementation I modeled the conference class, but removed things like display name since I didn't need it for sessions.
 
-I chose to add speaker property as a StringProperty to Session class and then filtered session query results on speaker.
+I added speaker name as a string to get featured speaker announcements.
+I added websafeConferenceKey to sessions that pass the key from the Conference class to show the parent/child relationship and to be able to show all sessions within a conference.
+
+**name = ndb.StringProperty(required=True)**
+This stores the session name and is required and is stored as a string property.
+
+
+**highlights      = ndb.StringProperty()**
+Highlist various key sessions 
+
+**organizerUserId = ndb.StringProperty()**
+stores the user id although this can also be gotten from the parent userid.
+
+**speaker         = ndb.StringProperty()**
+Stores speaker information and makes it easy to get featured speaker.
+
+**duration        = ndb.IntegerProperty()**
+How long a session runs and is stored as an Integer.
+
+**typeOfSession   = ndb.StringProperty(repeated=True)**
+Shows the types of sessions and can be repeated since there can be more than one type. 
+
+**startDate       = ndb.DateProperty()**
+Shows when the session begins and is held in a DateProperty.
+
+**startTime       = ndb.TimeProperty()**
+Shows what time a session starts. Held in TimeProperty type.
+	
+**websafeConferenceKey = ndb.StringProperty()**
+Stores the conference key for the session in a websafe URL and works for the parent/child connection between conference and session.
+	
 
 
 ## Task 2: Add Sessions to User Wishlist
+For sessions to be added to wishlists I added websafeSessionKey to show that connection between the two.
+
 
 ### Define the following Endpoints methods
 
 - `addSessionToWishlist(SessionKey)`
-   adds the session to the user's wishlist they of sessions to attend
+   adds the session to the user's wishlist of sessions to attend
 
 - `getSessionsInWishlist()`
    query for all the sessions that the user is interested in
+
+- `deleteSessionFromWishlist()`
+	deletes the session from the user's wishlist of sessions to attend.  
 
 ## Task 3: Work on indexes and queries
 
@@ -117,7 +152,15 @@ Query 2 Find all Breakfast sessions for hungry people.
 
 What if User wanted to avoid workshop (type) sessions as well as sessions after 7pm? What are the issues here and how could this be implemented?
 
-Since the Google App Engine Data Store only allows for one inequality filter per query you can perform two separate inequality filters such as pull all session types that are != workshop and filter that into a second query where the startTime < 7.
+"A single query may not use inequality comparisons (<, <=, >, >=, !=) on more than one property across all of its filters."
+
+But "Note that a query can combine equality (=) filters for different properties, along with one or more inequality filters on a single property."
+https://cloud.google.com/appengine/docs/python/datastore/queries#Python_Property_filters
+
+You could do a query where startDate < 7 AND sessionType = 'breakfast'
+										 AND sessionType = 'opening'
+										 etc
+keep adding all sessionTypes and what they equal other than workshop. It isn't very elegant, but it would do the trick according to the notes on Google site.
 
 
 ## Task 4: Add a Task
@@ -151,3 +194,4 @@ https://cloud.google.com/appengine/docs/python/endpoints/create_api#using_resour
 [10]: https://cloud.google.com/appengine/docs/python/modules/routing
 [11]: https://cloud.google.com/appengine/docs/python/memcache/usingmemcache
 [12]: https://cloud.google.com/python/
+[13]: https://discussions.udacity.com/t/featured-speaker-not-showing-up-in-memcache/39444/4

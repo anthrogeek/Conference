@@ -108,15 +108,15 @@ class ConferenceQueryForms(messages.Message):
 class Session(ndb.Model):
 	"""Session -- Session object"""
 	name            = ndb.StringProperty(required=True)
-	organizerUserId = ndb.StringProperty()
 	highlights      = ndb.StringProperty()
+	organizerUserId = ndb.StringProperty()
 	speaker         = ndb.StringProperty()
 	duration        = ndb.IntegerProperty()
 	typeOfSession   = ndb.StringProperty(repeated=True)
 	startDate       = ndb.DateProperty()
 	startTime       = ndb.TimeProperty()
 	websafeConferenceKey = ndb.StringProperty()
-	speaker			= ndb.StringProperty()
+	
 
 class SessionForm(messages.Message):
 	"""SessionForm -- Session outbound form message"""
@@ -150,3 +150,4 @@ class SessionQueryForms(messages.Message):
 class StringMessage(messages.Message):
     """StringMessage-- outbound (single) string message"""
     data = messages.StringField(1, required=True)
+
